@@ -8,14 +8,15 @@ let mainWindow;
 let addWindow;
 
 // Keep a reference for dev mode
-let dev = false;
-if ( process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath) ) {
-  dev = true;
-}
+const dev = ( process.defaultApp 
+    || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) 
+    || /[\\/]electron[\\/]/.test(process.execPath));
+
 function createWindow( ){
     // create new window
-    mainWindow = new BrowserWindow({ /* options */ });
-    
+    mainWindow = new BrowserWindow({
+        width: 1024, height: 768, show: false
+    });
     
     let indexPath;
     if ( dev && process.argv.indexOf('--noDevServer') === -1 ) {
@@ -30,12 +31,19 @@ function createWindow( ){
         // prod
         indexPath = url.format({
             protocol: 'file:',
-            pathname: path.join(__dirname, 'build', 'index.html'),
+            pathname: path.join(__dirname, 'dist', 'index.html'),
             slashes: true
         });
     }
     // Load html into window
     mainWindow.loadURL(indexPath);
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
+        // Open the DevTools automatically if developing
+        if ( dev ) {
+            mainWindow.webContents.openDevTools();
+        }
+    });
 
     // Quit app when closed: mainWindow가 닫히면 하위 window들도 닫힘
     mainWindow.on('closed', function(){
@@ -51,6 +59,24 @@ function createWindow( ){
 // Listen for app to be ready
 app.on('ready', createWindow);
 
+// Quit when all windows are closed.
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
+app.on('activate', () => {
+    if (mainWindow === null) {
+        createWindow();
+    }
+});
+
+
+
+
+
+
 // Handle create add window
 function createAddWindow(){
     // create new window
@@ -61,7 +87,7 @@ function createAddWindow(){
     });
     // Load html into window
     addWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'addWindow.html'),
+        pathname: path.join(__dirname,'public','addWindow.html'),
         protocol: 'file:',
         slashes: true
     }));

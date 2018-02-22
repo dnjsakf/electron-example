@@ -3,20 +3,22 @@ const BabiliWebpackPlugin = require('babili-webpack-plugin');
 
 const webpack = require("webpack");
 const { resolve } = require("path");
+const helper = require('./config/helper.js');
 
 const SRC_DIR = resolve(__dirname, 'src');
-const OUTPUT_DIR = resolve(__dirname, 'build');
+const OUTPUT_DIR = resolve(__dirname, 'dist');
+
 const defaultIncludes = [SRC_DIR];
 
 module.exports = {
-    entry:[ 
-        './src/index.js', 
-        './src/style.css'
+    entry: [
+        SRC_DIR+'/index.js',
+        SRC_DIR+'/style.css'
     ],
     output: {
         path: OUTPUT_DIR,
         filename: 'bundle.js',
-        publicPath: "/"
+        publicPath: "./"
     },
     module: {
         rules:[
@@ -36,17 +38,21 @@ module.exports = {
             }
         ]
     },
+    target: 'electron-renderer',
     plugins:[
-        new HtmlWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            template: helper.root( 'public/index.html' ),
+            inject: 'body'
+        }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production')
         }),
         new BabiliWebpackPlugin()
     ],
-    target: 'electron-renderer',
     stats: {
         colors: true,
         chunks: false,
-        children: false
+        children: false,
+        modules: false
     },
 }

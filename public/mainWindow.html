@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <h1 id="text">Hello, Electron</h1>
+        <ul></ul>
+    </body>
+    <script>
+        const axios = require('axios');
+        window.onload = function(){
+            axios.get('http://127.0.0.1:3000/api/test')
+            .then((response)=>{
+                document.querySelector('#text').innerText = response.data.result;
+            })
+            .catch((error)=>{
+                console.log( error );
+            });
+        }
+    </script>
+    <script>
+        const electron = require('electron');
+        const { ipcRenderer } = electron;
+        const ul = document.querySelector('ul');
+        // Add item
+        ipcRenderer.on('item:add', function(e, item){
+            const li = document.createElement('li');
+            const itemText = document.createTextNode(item);
+            li.appendChild(itemText);
+            ul.appendChild(li);
+        });
+
+        // Clear Item
+        ipcRenderer.on('item:clear', function(){
+            ul.innerHTML = '';
+        });
+
+        // Remove Item
+        ul.addEventListener('dblclick', e=>e.target.remove());
+    </script>
+</html>

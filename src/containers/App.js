@@ -8,10 +8,11 @@ class App extends React.Component {
     constructor(props, context){
         super(props, context);
 
+        console.log( props, context );
     }
     render(){
         return (
-            <h1>Hot</h1>
+            <h1>dddd</h1>
         )        
     }
 }

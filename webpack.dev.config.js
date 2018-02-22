@@ -5,7 +5,7 @@ const { resolve } = require("path");
 const helper = require('./config/helper.js');
 
 const SRC_DIR = resolve(__dirname, 'src');
-const OUTPUT_DIR = resolve(__dirname, 'build');
+const OUTPUT_DIR = resolve(__dirname, 'dist');
 const defaultIncludes = [SRC_DIR];
 
 module.exports = {
@@ -39,7 +39,6 @@ module.exports = {
     target: 'electron-renderer',
     plugins:[
         new HtmlWebpackPlugin({
-            // template: './public/index.html',
             template: helper.root( 'public/index.html' ),
             inject: 'body'
         }),
