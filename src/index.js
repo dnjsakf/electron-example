@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
 import { AppContainer } from 'react-hot-loader'
+import { BrowserRouter } from 'react-router-dom'
 
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
